@@ -21,7 +21,6 @@ public class MainController {
     public ResponseEntity check(@RequestBody User user) throws Exception {
         log.info("::::::check():::::::: user.getId() : {}",user.getId());
         log.info("::::::check():::::::: user.getPw() : {}",user.getPw());
-        user.setPw("바꿔바꿔");
         AES256 aes = new AES256();
         String secretData = aes.encrypt(user.getId());
         log.info("::::::encrypt Data : {}",secretData);

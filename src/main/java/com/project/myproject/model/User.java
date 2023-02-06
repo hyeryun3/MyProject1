@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter @Setter
 @RequiredArgsConstructor
 public class User {
-    String id;
-    String pw;
+    private String id;
+    private String pw;
 }
