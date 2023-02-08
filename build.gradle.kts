@@ -28,6 +28,12 @@ dependencies {
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // https://mvnrepository.com/artifact/com.sun.mail/javax.mail
+    implementation("com.sun.mail:javax.mail:1.6.2")
+    // https://mvnrepository.com/artifact/javax.mail/javax.mail-api
+    implementation("javax.mail:javax.mail-api:1.6.2")
+
+
 }
 
 tasks.withType<Test> {

@@ -1,13 +1,10 @@
 package com.project.myproject.config;
 
-import lombok.RequiredArgsConstructor;
-
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
-@RequiredArgsConstructor
 public class AES256 {
     public static String alg = "AES/CBC/PKCS5Padding";
     private final String key = "hyeryunsKeyMyKeyMyEncryptedKey==";
