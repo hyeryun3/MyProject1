@@ -29,7 +29,6 @@ public class MainController {
         log.info("::::::check():::::::: user.getEmail2() : {}",user.getEmail2());
         log.info("::::::check():::::::: user.getPassword() : {}",user.getPassword());
 
-        User userAes = service.aesProc(user);
         return ResponseEntity.ok(user);
     }
 
@@ -43,6 +42,7 @@ public class MainController {
 
         return ResponseEntity.ok(authNo);
     }
+
 
 
 

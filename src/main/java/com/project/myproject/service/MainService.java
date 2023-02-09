@@ -2,21 +2,34 @@ package com.project.myproject.service;
 
 import com.project.myproject.config.AES256;
 import com.project.myproject.model.User;
+import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.WebProperties;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.Reader;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.Properties;
-import java.util.Random;
 
 @Service
 @Slf4j
+@RequiredArgsConstructor
+@PropertySource("/admin.properties")
 public class MainService {
+
+    private final Environment env;
 
     public User aesProc(User user) throws Exception{
         AES256 aes = new AES256();
@@ -31,7 +44,7 @@ public class MainService {
     }
 
 
-    public int auth(String mail) throws NoSuchAlgorithmException {
+    public int auth(String mail) throws NoSuchAlgorithmException, IOException {
 
         log.info("auth()..........");
 
@@ -42,14 +55,16 @@ public class MainService {
         props.put("mail.smtp.starttls.required","true");
         props.put("mail.smtp.ssl.trust","smtp.naver.com");
 
+        String adminId = env.getProperty("adminId");
+        String adminPw = env.getProperty("adminPw");
+
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication("rabbith3@naver.com", "P4FXRQPBDK82");
+                return new PasswordAuthentication(adminId, adminPw);
             }
         });
 
-//        String receiver = "receiveMail@gmail.com"; // 메일 받을 주소
         String title = "메일 인증번호가 발송되었습니다.";
 
         SecureRandom rand = SecureRandom.getInstanceStrong();
@@ -60,7 +75,7 @@ public class MainService {
         String content = "<h2>인증번호는 " + authNo + "입니다.</h2>";
         Message message = new MimeMessage(session);
         try {
-            message.setFrom(new InternetAddress("rabbith3@naver.com", "관리자", "utf-8"));
+            message.setFrom(new InternetAddress(adminId, "개발관리자", "utf-8"));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(mail));
             message.setSubject(title);
             message.setContent(content, "text/html; charset=utf-8");
