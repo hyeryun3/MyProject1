@@ -3,22 +3,14 @@ package com.project.myproject.service;
 import com.project.myproject.config.AES256;
 import com.project.myproject.model.User;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.WebProperties;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.Reader;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Properties;
@@ -44,7 +36,7 @@ public class MainService {
     }
 
 
-    public int auth(String mail) throws NoSuchAlgorithmException, IOException {
+    public int auth(String mail) throws NoSuchAlgorithmException {
 
         log.info("auth()..........");
 
