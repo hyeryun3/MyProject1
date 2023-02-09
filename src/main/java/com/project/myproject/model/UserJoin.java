@@ -4,8 +4,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class User {
+public class UserJoin {
     private String name;
     private String email;
+    private String email2;
     private String password;
 }
