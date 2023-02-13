@@ -24,7 +24,7 @@ public class MainServiceImpl implements MainService{
 
     private final Environment env;
 
-    public User aesUserInfo(User user) throws Exception{
+    public User enUserInfo(User user) throws Exception{
         AES256 aes = new AES256();
         aes.encrypt(user.getName());
         aes.encrypt(user.getPassword());
@@ -33,9 +33,35 @@ public class MainServiceImpl implements MainService{
         return user;
     }
 
+    public User deUserInfo(User user) throws Exception{
+        AES256 aes = new AES256();
+        aes.decrypt(user.getName());
+        aes.decrypt(user.getPassword());
+        aes.decrypt(user.getEmail());
+
+        return user;
+    }
+
+    public String loginUser(User user) throws Exception {
+        log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
+        log.info("::::::check():::::::: user.getPassword() : {}",user.getPassword());
+
+        // DB 데이터 꺼내오기
+        User userData = new User();
+
+        // DB 데이터 복호화
+        userData = deUserInfo(userData);
+
+        // 데이터 비교
+        if(user.getEmail().equals(userData.getEmail()) && user.getPassword().equals(userData.getPassword())){
+            return "success";
+        }else{
+            return "failed";
+        }
+    }
 
     public void joinUser(UserJoin user) throws Exception{
-        log.info("::::::check():::::::: user.getId() : {}",user.getName());
+        log.info("::::::check():::::::: user.getName() : {}",user.getName());
         log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
         log.info("::::::check():::::::: user.getEmail2() : {}",user.getEmail2());
         log.info("::::::check():::::::: user.getPassword() : {}",user.getPassword());
@@ -48,8 +74,11 @@ public class MainServiceImpl implements MainService{
         userInfo.setPassword(user.getPassword());
         userInfo.setEmail(email);
         // 이름, 비밀번호, 메일 암호화
-        aesUserInfo(userInfo);
+        enUserInfo(userInfo);
+
+        // DB 저장
     }
+
 
     public int mailAuth(String mail) throws NoSuchAlgorithmException {
 

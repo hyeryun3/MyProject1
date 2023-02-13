@@ -7,7 +7,11 @@ import java.security.NoSuchAlgorithmException;
 
 public interface MainService {
 
-    public User aesUserInfo(User user) throws Exception;
+    public User enUserInfo(User user) throws Exception;
+
+    public User deUserInfo(User user) throws Exception;
+
+    public String loginUser(User user) throws Exception;
 
     public void joinUser(UserJoin user) throws Exception;
 
