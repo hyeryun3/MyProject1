@@ -1,66 +1,62 @@
 package com.project.myproject.service;
 
 import com.project.myproject.config.AES256;
+import com.project.myproject.config.ConfigUtil;
 import com.project.myproject.model.User;
 import com.project.myproject.model.UserJoin;
+import com.project.myproject.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.List;
 import java.util.Properties;
 
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@PropertySource("/admin.properties")
 public class MainServiceImpl implements MainService{
 
-    private final Environment env;
+    private final ConfigUtil config;
 
-    public User enUserInfo(User user) throws Exception{
-        AES256 aes = new AES256();
-        aes.encrypt(user.getName());
-        aes.encrypt(user.getPassword());
-        aes.encrypt(user.getEmail());
+    private final UserMapper mapper;
 
-        return user;
-    }
-
-    public User deUserInfo(User user) throws Exception{
-        AES256 aes = new AES256();
-        aes.decrypt(user.getName());
-        aes.decrypt(user.getPassword());
-        aes.decrypt(user.getEmail());
-
-        return user;
-    }
+//    public MainServiceImpl(UserMapper uu, ConfigUtil config){
+//        this.config = config;
+//        this.mapper = uu;
+//    }
 
     public String loginUser(User user) throws Exception {
         log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
         log.info("::::::check():::::::: user.getPassword() : {}",user.getPassword());
 
+        String res = "FAILED";
+
         // DB 데이터 꺼내오기
-        User userData = new User();
+        List<User> userData = mapper.selectUser();
+
+        User deUser = new User();
 
         // DB 데이터 복호화
-        userData = deUserInfo(userData);
-
-        // 데이터 비교
-        if(user.getEmail().equals(userData.getEmail()) && user.getPassword().equals(userData.getPassword())){
-            return "success";
-        }else{
-            return "failed";
+        for(User data: userData){
+            deUser = deUserInfo(data);
+            // 데이터 비교
+            if(user.getEmail().equals(deUser.getEmail()) && user.getPassword().equals(deUser.getPassword())){
+                res = "SUCCESS";
+                break;
+            }
         }
-    }
 
-    public void joinUser(UserJoin user) throws Exception{
+        return res;
+    }
+    @Transactional
+    public int joinUser(UserJoin user) throws Exception{
         log.info("::::::check():::::::: user.getName() : {}",user.getName());
         log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
         log.info("::::::check():::::::: user.getEmail2() : {}",user.getEmail2());
@@ -74,9 +70,11 @@ public class MainServiceImpl implements MainService{
         userInfo.setPassword(user.getPassword());
         userInfo.setEmail(email);
         // 이름, 비밀번호, 메일 암호화
-        enUserInfo(userInfo);
+
+        userInfo = enUserInfo(userInfo);
 
         // DB 저장
+        return mapper.insertUser(userInfo);
     }
 
 
@@ -91,8 +89,8 @@ public class MainServiceImpl implements MainService{
         props.put("mail.smtp.starttls.required","true");
         props.put("mail.smtp.ssl.trust","smtp.naver.com");
 
-        String adminId = env.getProperty("adminId");
-        String adminPw = env.getProperty("adminPw");
+        String adminId = config.getAdminId();
+        String adminPw = config.getAdminPw();
 
         Session session = Session.getInstance(props, new Authenticator() {
             @Override
@@ -122,7 +120,28 @@ public class MainServiceImpl implements MainService{
         }
 
         return authNo;
+    }
 
+    public User enUserInfo(User user) throws Exception{
+        AES256 aes = new AES256();
+
+        User enUser = new User();
+        enUser.setName(aes.encrypt(user.getName()));
+        enUser.setPassword(aes.encrypt(user.getPassword()));
+        enUser.setEmail(aes.encrypt(user.getEmail()));
+
+        return enUser;
+    }
+
+    public User deUserInfo(User user) throws Exception{
+        AES256 aes = new AES256();
+
+        User deUser = new User();
+        deUser.setName(aes.decrypt(user.getName()));
+        deUser.setPassword(aes.decrypt(user.getPassword()));
+        deUser.setEmail(aes.decrypt(user.getEmail()));
+
+        return deUser;
     }
 
 }

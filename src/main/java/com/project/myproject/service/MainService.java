@@ -7,14 +7,14 @@ import java.security.NoSuchAlgorithmException;
 
 public interface MainService {
 
-    public User enUserInfo(User user) throws Exception;
+    User enUserInfo(User user) throws Exception;
 
-    public User deUserInfo(User user) throws Exception;
+    User deUserInfo(User user) throws Exception;
 
-    public String loginUser(User user) throws Exception;
+    String loginUser(User user) throws Exception;
 
-    public void joinUser(UserJoin user) throws Exception;
+    int joinUser(UserJoin user) throws Exception;
 
-    public int mailAuth(String mail) throws NoSuchAlgorithmException;
+    int mailAuth(String mail) throws NoSuchAlgorithmException;
 
 }

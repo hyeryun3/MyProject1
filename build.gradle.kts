@@ -22,9 +22,19 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-web-services")
-    compileOnly("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
+    compileOnly("org.projectlombok:lombok:1.18.10")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+//     https://mvnrepository.com/artifact/com.mysql/mysql-connector-j
+//    implementation("com.mysql:mysql-connector-j:8.0.32")
+
+    implementation("org.mybatis:mybatis-spring:2.0.6")
+    implementation("org.mybatis:mybatis:3.5.6")
+
+
+
     runtimeOnly("com.mysql:mysql-connector-j")
     annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
