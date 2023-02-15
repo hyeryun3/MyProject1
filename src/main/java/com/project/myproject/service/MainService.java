@@ -17,4 +17,6 @@ public interface MainService {
 
     int mailAuth(String mail) throws NoSuchAlgorithmException;
 
+    String mailCheck(UserJoin user);
+
 }

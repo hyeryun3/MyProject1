@@ -13,4 +13,6 @@ public interface UserMapper {
     List<User> selectUser();
 
     int insertUser(User user);
+
+    int checkMail(String mail);
 }

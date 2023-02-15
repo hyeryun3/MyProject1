@@ -27,10 +27,6 @@ public class MainServiceImpl implements MainService{
 
     private final UserMapper mapper;
 
-//    public MainServiceImpl(UserMapper uu, ConfigUtil config){
-//        this.config = config;
-//        this.mapper = uu;
-//    }
 
     public String loginUser(User user) throws Exception {
         log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
@@ -69,14 +65,30 @@ public class MainServiceImpl implements MainService{
         userInfo.setName(user.getName());
         userInfo.setPassword(user.getPassword());
         userInfo.setEmail(email);
-        // 이름, 비밀번호, 메일 암호화
 
+        // 이름, 비밀번호, 메일 암호화
         userInfo = enUserInfo(userInfo);
 
         // DB 저장
         return mapper.insertUser(userInfo);
     }
 
+    public String mailCheck(UserJoin user){
+        String email = user.getEmail() + "@" + user.getEmail2();
+        int count = 0;
+        try {
+            email = enString(email);
+            count = mapper.checkMail(email);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+        if(count>0){
+            return "O";
+        }else{
+            return "X";
+        }
+    }
 
     public int mailAuth(String mail) throws NoSuchAlgorithmException {
 
@@ -126,6 +138,7 @@ public class MainServiceImpl implements MainService{
         AES256 aes = new AES256();
 
         User enUser = new User();
+
         enUser.setName(aes.encrypt(user.getName()));
         enUser.setPassword(aes.encrypt(user.getPassword()));
         enUser.setEmail(aes.encrypt(user.getEmail()));
@@ -144,4 +157,9 @@ public class MainServiceImpl implements MainService{
         return deUser;
     }
 
+    public String enString(String text) throws Exception{
+        AES256 aes = new AES256();
+
+        return aes.encrypt(text);
+    }
 }

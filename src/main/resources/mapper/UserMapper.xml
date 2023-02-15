@@ -8,4 +8,8 @@
     <insert id="insertUser" parameterType="User">
         insert into user values(default,#{email},#{name},#{password})
     </insert>
+
+    <select id="checkMail" parameterType="String" resultType="int">
+        select count(*) from user where email = #{email}
+    </select>
 </mapper>
