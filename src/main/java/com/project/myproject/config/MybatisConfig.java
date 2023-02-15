@@ -31,6 +31,9 @@ public class MybatisConfig {
     @Value("${spring.datasource.password}")
     private String password;
 
+    @Value("${mybatis.type-aliases-package}")
+    private String myPath;
+
     @Autowired
     ApplicationContext applicationContext;
 
@@ -52,6 +55,7 @@ public class MybatisConfig {
         factoryBean.setDataSource(dataSource);
         factoryBean.setConfigLocation(applicationContext.getResource("classpath:/mybatis-config.xml"));
         factoryBean.setMapperLocations(applicationContext.getResources("classpath:/mapper/**/*.xml"));
+        factoryBean.setTypeAliasesPackage(myPath);
         return factoryBean;
     }
 
