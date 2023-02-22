@@ -1,5 +1,7 @@
 package com.project.myproject.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -7,7 +9,10 @@ import java.util.Base64;
 
 public class AES256 {
     public static String alg = "AES/CBC/PKCS5Padding";
-    private final String key = "hyeryunsKeyMyKeyMyEncryptedKey==";
+
+    @Value("{secret.key}")
+    private String key;
+
     private final String iv = key.substring(0, 16); // 16byte
 
     public String encrypt(String text) throws Exception {
