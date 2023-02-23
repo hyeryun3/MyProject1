@@ -7,6 +7,7 @@ import com.project.myproject.model.UserJoin;
 import com.project.myproject.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
@@ -25,30 +27,35 @@ public class MainServiceImpl implements MainService{
 
     private final ConfigUtil config;
 
+    private final AES256 aes;
     private final UserMapper mapper;
 
 
     public String loginUser(User user) throws Exception {
-        log.info("::::::check():::::::: user.getEmail() : {}",user.getEmail());
-        log.info("::::::check():::::::: user.getPassword() : {}",user.getPassword());
-
         String res = "FAILED";
 
+        User enUser = new User();
+        enUser.setPassword(enString(user.getPassword()));
+        enUser.setEmail(enString(user.getEmail()));
+
+        System.out.println(enUser.getEmail());
+        System.out.println(enUser.getPassword());
         // DB 데이터 꺼내오기
-        List<User> userData = mapper.selectUser();
+        List<User> userData = mapper.selectUser(enUser);
 
-        User deUser = new User();
+        if (userData != null){
+            User deUser = new User();
+            // DB 데이터 복호화
+            for(User data: userData){
+                deUser = deUserInfo(data);
 
-        // DB 데이터 복호화
-        for(User data: userData){
-            deUser = deUserInfo(data);
-            // 데이터 비교
-            if(user.getEmail().equals(deUser.getEmail()) && user.getPassword().equals(deUser.getPassword())){
-                res = "SUCCESS";
-                break;
+                // 데이터 비교
+                if(user.getEmail().equals(deUser.getEmail()) && user.getPassword().equals(deUser.getPassword())){
+                    res = "SUCCESS";
+                    break;
+                }
             }
         }
-
         return res;
     }
     @Transactional
@@ -135,7 +142,6 @@ public class MainServiceImpl implements MainService{
     }
 
     public User enUserInfo(User user) throws Exception{
-        AES256 aes = new AES256();
 
         User enUser = new User();
 
@@ -147,7 +153,6 @@ public class MainServiceImpl implements MainService{
     }
 
     public User deUserInfo(User user) throws Exception{
-        AES256 aes = new AES256();
 
         User deUser = new User();
         deUser.setName(aes.decrypt(user.getName()));
@@ -158,7 +163,6 @@ public class MainServiceImpl implements MainService{
     }
 
     public String enString(String text) throws Exception{
-        AES256 aes = new AES256();
 
         return aes.encrypt(text);
     }

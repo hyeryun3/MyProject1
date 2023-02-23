@@ -3,7 +3,7 @@
 
 <mapper namespace="com.project.myproject.repository.UserMapper">
     <select id="selectUser" resultType="User">
-        select * from user
+        select * from user where email=#{email} and password=#{password}
     </select>
     <insert id="insertUser" parameterType="User">
         insert into user values(default,#{email},#{name},#{password})

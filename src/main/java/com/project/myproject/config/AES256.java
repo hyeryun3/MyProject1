@@ -1,21 +1,23 @@
 package com.project.myproject.config;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.util.Base64;
 
+@Component
 public class AES256 {
     public static String alg = "AES/CBC/PKCS5Padding";
 
-    @Value("{secret.key}")
+    @Value("${secret.key}")
     private String key;
 
-    private final String iv = key.substring(0, 16); // 16byte
-
     public String encrypt(String text) throws Exception {
+        String iv = key.substring(0, 16); // 16byte
+
         Cipher cipher = Cipher.getInstance(alg);
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
         IvParameterSpec ivParamSpec = new IvParameterSpec(iv.getBytes());
@@ -26,6 +28,8 @@ public class AES256 {
     }
 
     public String decrypt(String cipherText) throws Exception {
+        String iv = key.substring(0, 16); // 16byte
+
         Cipher cipher = Cipher.getInstance(alg);
         SecretKeySpec keySpec = new SecretKeySpec(key.getBytes(), "AES");
         IvParameterSpec ivParamSpec = new IvParameterSpec(iv.getBytes());

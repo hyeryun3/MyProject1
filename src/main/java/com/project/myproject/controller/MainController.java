@@ -61,17 +61,16 @@ public class MainController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity login(@RequestBody HashMap<String, String> map, HttpServletResponse response) throws Exception{
+    public ResponseEntity login(@RequestBody User user) throws Exception{
 
         log.info("::::::login()::::::");
-        log.info("::::::login():::::::: user.getEmail() : {}",map.get("email"));
-        log.info("::::::login():::::::: user.getPassword() : {}",map.get("password"));
+        log.info("::::::login():::::::: user.getEmail() : {}",user.getEmail());
+        log.info("::::::login():::::::: user.getPassword() : {}", user.getPassword());
 
-//        if(res.equals("SUCCESS")){
+        String res = service.loginUser(user);
 
-
-//        }
-        return ResponseEntity.ok(null);
+        System.out.println(res);
+        return ResponseEntity.ok(res);
     }
 
     @PostMapping("/join")
