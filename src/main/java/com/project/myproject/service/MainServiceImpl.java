@@ -7,7 +7,6 @@ import com.project.myproject.model.UserJoin;
 import com.project.myproject.repository.UserMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,6 @@ import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.util.Base64;
 import java.util.List;
 import java.util.Properties;
 
@@ -26,7 +24,6 @@ import java.util.Properties;
 public class MainServiceImpl implements MainService{
 
     private final ConfigUtil config;
-
     private final AES256 aes;
     private final UserMapper mapper;
 
